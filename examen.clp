@@ -10,31 +10,31 @@
 (defrule coger-bloque
     (declare (salience 10))
     ?f <-(bloques $?ini ?z)
-    (test(= ?llevando 0))
     =>
     (printout t "Cojo el bloque" ?z crlf)
     (retract ?f)
-    (assert (robot bloque ?z  (+ ?llevando 1)))
+    (assert (robot bloque ?z  (= ?llevando 1)))
 )
 
 
-
-(defrule poner-bloque
+(defrule depositar-bloque
     (declare (salience 20))
-    ?f <-(mesa bloques $?ini ?y)
+    ?f <-(robot bloque ?z ?llevando)
     (test(= ?llevando 1))
     =>
-    (printout t "Pongo el bloque" ?y crlf)
+    (printout t "Deposito el bloque" ?z crlf)
     (retract ?f)
-    (assert(mesa bloques $?ini ?y (- ?llevando 1)))
+    (assert(mesa bloques $?ini ?z (= ?llevando 0)))
 )
+
+
 
 
 (defrule retirar-bloque
     ?f <-(mesa bloques $?ini ?x ?llevando)
     (test(= ?llevando 0))
     =>
-    (printout t "Retiro el paquete" ?x crlf)
+    (printout t "Retiro el bloque" ?x crlf)
     (retract ?f)
     (assert(mesa bloques $?ini ?llevando)))
 )
